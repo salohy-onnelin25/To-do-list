@@ -1,0 +1,167 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: transparent;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  padding: 20px;
+  overflow: hidden;
+}
+
+#myVideo {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  z-index: -1;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.todo-container {
+  background: rgba(46, 45, 45, 0.822);
+  padding: 20px 30px;
+  border-radius: 8px;
+  -webkit-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.editable-title {
+  font-size: 2em;
+  font-weight: bold;
+  text-align: center;
+  color: #3498db;
+  border: none;
+  background: transparent;
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 5px 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  cursor: text;
+}
+.editable-title:focus {
+  outline: 1px solid rgb(181.9539748954, 217.9372384937, 242.0460251046);
+  border-radius: 4px;
+}
+
+.input-section {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-bottom: 20px;
+}
+
+#new-task-input {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px 0 0 4px;
+  font-size: 16px;
+}
+
+#add-task-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 0 4px 4px 0;
+  -webkit-transition: background-color 0.3s;
+  transition: background-color 0.3s;
+}
+#add-task-btn:hover {
+  background-color: rgb(33.1380753138, 125.1882845188, 186.8619246862);
+}
+
+.task-list {
+  list-style: none;
+  padding: 0;
+}
+
+.task {
+  background: #ecf0f1;
+  margin-bottom: 8px;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-transition: background 0.3s, color 0.3s;
+  transition: background 0.3s, color 0.3s;
+}
+.task:hover {
+  background: rgb(244.8090909091, 246.9545454545, 247.4909090909);
+}
+
+.task-content {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  -webkit-transition: -webkit-text-decoration 0.3s;
+  transition: -webkit-text-decoration 0.3s;
+  transition: text-decoration 0.3s;
+  transition: text-decoration 0.3s, -webkit-text-decoration 0.3s;
+}
+
+.task.completed .task-content {
+  text-decoration: line-through;
+  color: #95a5a6;
+}
+
+.task.delete-pending {
+  background: rgb(253.3561643836, 242.7397260274, 241.6438356164);
+  color: #333;
+}
+
+.delete-warning {
+  color: #e74c3c;
+  font-weight: bold;
+  font-size: 0.9em;
+  padding-left: 10px;
+  opacity: 0;
+  -webkit-transition: opacity 0.3s;
+  transition: opacity 0.3s;
+}
+.delete-pending .delete-warning {
+  opacity: 1;
+}
+
+.task-checkbox {
+  margin-left: 15px;
+  min-width: 20px;
+  cursor: pointer;
+  accent-color: #2ecc71;
+}
+
+#clear-data-btn {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #95a5a6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  -webkit-transition: background-color 0.3s;
+  transition: background-color 0.3s;
+}
+#clear-data-btn:hover {
+  background-color: rgb(121.2769230769, 141.4615384615, 142.7230769231);
+}/*# sourceMappingURL=index.css.map */

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-do list</title>
+    <link rel="stylesheet" href="./Assets/Styles/index.css">
+</head>
+<body>
+    <video autoplay muted loop id="myVideo">
+        <source src="./Assets/Imgs/Cube.mp4" type="video/mp4">
+        Votre navigateur ne supporte pas la vidéo en arrière-plan.
+    </video>
+    <div class="todo-container">
+        
+        <input type="text" id="list-title" placeholder="Ma Liste de Tâches" class="editable-title">
+        
+        <div class="input-section">
+            <input type="text" id="new-task-input" placeholder="Ajouter une nouvelle tâche...">
+            <button id="add-task-btn">Ajouter</button>
+        </div>
+
+        <ul class="task-list" id="task-list">
+            </ul>
+        
+        <button id="clear-data-btn">Effacer toutes les données sauvegardées</button> 
+    </div>
+    <script src="./Assets/Styles/js/index.js"></script>
+</body>
+</html>
