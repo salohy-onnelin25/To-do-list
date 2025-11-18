@@ -157,3 +157,50 @@ html {
         color: $color-white;
     }
 }
+#splash-overlay {
+    position: fixed; /* Reste au-dessus de tout */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white; /* L'écran blanc que vous avez demandé */
+    z-index: 9999; /* Assure qu'il est au premier plan */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 1s ease-out; /* Pour la transition de disparition */
+}
+
+#splash-overlay.hidden {
+    opacity: 0;
+    visibility: hidden; /* Cache complètement après la transition */
+    display: flex;
+    justify-content: center; /* Centrage horizontal */
+    align-items: center;
+}
+
+// --- Texte d'animation (Même logique que l'ancienne page splash) ---
+#splash-text {
+    font-size: clamp(1.5rem, 4.5vw, 4.5rem);
+    font-weight: bolder;
+    color: #333;
+    width: auto;
+    max-width: 0;
+    overflow: hidden; 
+    white-space: nowrap; 
+    border-right: .15em solid orange;
+    /* La durée sera gérée par JavaScript pour le démarrage */
+}
+
+/* Keyframes pour l'effet de frappe */
+@keyframes typing {
+    from { max-width: 0 } 
+    to { max-width: 100% }
+}
+
+/* Keyframes pour le curseur clignotant */
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: orange; }
+}

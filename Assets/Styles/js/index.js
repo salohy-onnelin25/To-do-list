@@ -1,25 +1,35 @@
-// script.js
-
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Éléments de l'overlay de démarrage ---
+    const splashOverlay = document.getElementById('splash-overlay');
+    const splashText = document.getElementById('splash-text');
+    
+    // --- Éléments de la liste de tâches ---
     const title = document.getElementById('list-title');
     const input = document.getElementById('task-input');
     const addTaskBtn = document.getElementById('add-task-btn');
     const deleteSelectedBtn = document.getElementById('delete-selected-btn');
     const taskList = document.getElementById('task-list');
     
-    // --- Constants ---
-    const MAX_TASKS = 20;
+    // --- Constantes (Basées sur vos contraintes) ---
+    const MAX_TASKS = 20; // Maximum 20 listes/tâches
     const MAX_WORDS = 5;
     const TASK_STORAGE_KEY = 'todoListTasks'; 
     const TITLE_STORAGE_KEY = 'todoListTitle'; 
 
+    // --- Variables et Durées d'Animation ---
+    const TYPING_CHARS = 31; // Nombre de caractères dans "Créons votre vision ensemble"
+    const TYPING_SPEED = 150; // Millisecondes par caractère
+    const totalTypingTime = TYPING_CHARS * TYPING_SPEED; 
+    const delayAfterTyping = 1000; // Délai après la fin de la frappe
+    const fadeOutDuration = 1000; 
+
     // --- Helper function to trigger vibration and visual shake (Overrides alerts) ---
     function triggerAlert() {
-        // 1. Vibrate (if supported by the device)
+        // Alerte par vibration (si supporté)
         if ("vibrate" in navigator) {
             navigator.vibrate(200);
         }
-        // 2. Add visual shake class defined in CSS
+        // Alerte visuelle (secousse de l'input)
         input.classList.add('vibrate');
         setTimeout(() => {
             input.classList.remove('vibrate');
@@ -29,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Live Input Enforcement (Prevents client from typing the 6th word) ---
     function liveWordLimitEnforcement() {
         const text = input.value.trim();
-        // Split by whitespace and filter out empty strings to get an accurate word count
         const words = text.split(/\s+/).filter(word => word.length > 0);
         
         if (words.length > MAX_WORDS) {
@@ -38,13 +47,12 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // 2. Truncate the input value back to the first MAX_WORDS words
             const limitedText = words.slice(0, MAX_WORDS).join(' ');
-            
-            // This prevents the new word from being entered successfully
             input.value = limitedText;
+            
+            input.setSelectionRange(input.value.length, input.value.length);
         }
     }
     
-    // Attach the live enforcement listener to execute immediately on user input
     input.addEventListener('input', liveWordLimitEnforcement);
 
 
@@ -138,9 +146,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // NOTE: Word count enforcement is primarily handled by the 'input' event listener. 
-        // If we reach this point, the text is valid (<= 5 words).
-
         createTaskElement(taskText, false);
         input.value = ''; 
         saveTasks();
@@ -175,8 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const checkedTasks = taskList.querySelectorAll('.confirmation-checkbox:checked');
         
         if (checkedTasks.length === 0) {
-            alert("No tasks confirmed for deletion (no checkboxes checked).");
-            return;
+            return; 
         }
 
         if (confirm(`Are you sure you want to delete ${checkedTasks.length} selected task(s)?`)) {
@@ -188,7 +192,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- INITIALIZATION ---
-    loadTitle(); 
-    loadTasks(); 
+    // ==========================================================
+    // 🚀 INITIALISATION AVEC ANIMATION DE DÉMARRAGE (CORRIGÉE)
+    // ==========================================================
+    
+    // 1. Démarre l'animation de frappe et l'animation du curseur clignotant
+    // NOTE: L'effet de centrage correct nécessite d'animer 'max-width' dans le CSS.
+    splashText.style.animation = `
+        typing ${totalTypingTime / 1000}s steps(${TYPING_CHARS}, end) forwards,
+        blink-caret .75s step-end infinite
+    `;
+
+    // 2. Attend la fin de la frappe (totalTypingTime)
+    setTimeout(() => {
+        // 3. Arrête l'animation du curseur clignotant en le remplaçant par un état fixe
+        // On retire l'animation 'blink-caret'
+        splashText.style.animation = `typing ${totalTypingTime / 1000}s steps(${TYPING_CHARS}, end) forwards`;
+        splashText.style.borderRightColor = 'orange'; // Laisse le curseur visible et fixe
+        
+        // 4. Après le délai de lecture (delayAfterTyping), déclenche la transition de disparition (fade-out)
+        setTimeout(() => {
+            splashOverlay.classList.add('hidden');
+            
+            // 5. Une fois la transition terminée (fadeOutDuration), charge les données et retire l'overlay
+            setTimeout(() => {
+                loadTitle(); 
+                loadTasks(); 
+                splashOverlay.style.display = 'none'; 
+            }, fadeOutDuration); 
+            
+        }, delayAfterTyping); 
+        
+    }, totalTypingTime); 
 });
