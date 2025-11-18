@@ -1,144 +1,194 @@
+// script.js
+
 document.addEventListener('DOMContentLoaded', () => {
-    const taskList = document.getElementById('task-list');
-    const newTaskInput = document.getElementById('new-task-input');
+    const title = document.getElementById('list-title');
+    const input = document.getElementById('task-input');
     const addTaskBtn = document.getElementById('add-task-btn');
-    const clearDataBtn = document.getElementById('clear-data-btn');
-    const listTitleInput = document.getElementById('list-title');
-
-    // Clés de stockage
-    const STORAGE_KEY_TASKS = 'todoListTasksFR';
-    const STORAGE_KEY_TITLE = 'todoListTitleFR';
-
-    // --- Fonctions de Persistance du Titre ---
-
-    const saveTitle = () => {
-        localStorage.setItem(STORAGE_KEY_TITLE, listTitleInput.value);
-    };
-
-    const loadTitle = () => {
-        const savedTitle = localStorage.getItem(STORAGE_KEY_TITLE);
-        if (savedTitle) {
-            listTitleInput.value = savedTitle;
-        } else {
-            // FIX: Initialisation par défaut
-            listTitleInput.value = 'Ma Liste de Tâches'; 
-        }
-    };
+    const deleteSelectedBtn = document.getElementById('delete-selected-btn');
+    const taskList = document.getElementById('task-list');
     
-    // ... (Reste des fonctions saveTasks, loadTasks, attachCheckboxListeners, toggleCompletion, addTask) ...
+    // --- Constants ---
+    const MAX_TASKS = 20;
+    const MAX_WORDS = 5;
+    const TASK_STORAGE_KEY = 'todoListTasks'; 
+    const TITLE_STORAGE_KEY = 'todoListTitle'; 
 
-    const saveTasks = () => {
-        localStorage.setItem(STORAGE_KEY_TASKS, taskList.innerHTML);
-    };
-
-    const loadTasks = () => {
-        const savedData = localStorage.getItem(STORAGE_KEY_TASKS);
-        if (savedData) {
-            taskList.innerHTML = savedData;
-            attachCheckboxListeners();
+    // --- Helper function to trigger vibration and visual shake (Overrides alerts) ---
+    function triggerAlert() {
+        // 1. Vibrate (if supported by the device)
+        if ("vibrate" in navigator) {
+            navigator.vibrate(200);
         }
-    };
-
-    const attachCheckboxListeners = () => {
-        taskList.querySelectorAll('.task-checkbox').forEach(checkbox => {
-             const taskItem = checkbox.closest('.task');
-             if (checkbox.checked) {
-                 taskItem.classList.add('completed');
-             } else {
-                 taskItem.classList.remove('completed');
-             }
-        });
+        // 2. Add visual shake class defined in CSS
+        input.classList.add('vibrate');
+        setTimeout(() => {
+            input.classList.remove('vibrate');
+        }, 300);
     }
 
-    const toggleCompletion = (taskItem, isChecked) => {
-        if (isChecked) {
-            taskItem.classList.add('completed');
-            taskItem.classList.remove('delete-pending'); 
-        } else {
-            taskItem.classList.remove('completed');
-        }
-        saveTasks();
-    };
-
-    const addTask = () => {
-        const taskText = newTaskInput.value.trim();
-        if (taskText === "") {
-            alert("Veuillez entrer une tâche.");
-            return;
-        }
-
-        const li = document.createElement('li');
-        li.classList.add('task');
+    // --- Live Input Enforcement (Prevents client from typing the 6th word) ---
+    function liveWordLimitEnforcement() {
+        const text = input.value.trim();
+        // Split by whitespace and filter out empty strings to get an accurate word count
+        const words = text.split(/\s+/).filter(word => word.length > 0);
         
-        li.innerHTML = `
-            <span class="task-content">${taskText}</span>
-            <span class="delete-warning">Cliquez à nouveau pour supprimer !</span>
-            <input type="checkbox" class="task-checkbox"> 
-        `;
-        
-        taskList.appendChild(li);
-        newTaskInput.value = '';
-        saveTasks(); 
-    };
-
-    // ----------------------------------------------------------------------------------
-    // --- Événements ---
-    // ----------------------------------------------------------------------------------
-
-    // 1. Événement de Sauvegarde du Titre
-    // CORRIGÉ: Changer 'saveTitre' en 'saveTitle'
-    listTitleInput.addEventListener('blur', saveTitle); 
+        if (words.length > MAX_WORDS) {
+            // 1. Trigger vibration/shake alert instantly
+            triggerAlert();
+            
+            // 2. Truncate the input value back to the first MAX_WORDS words
+            const limitedText = words.slice(0, MAX_WORDS).join(' ');
+            
+            // This prevents the new word from being entered successfully
+            input.value = limitedText;
+        }
+    }
     
-    // 2. Événements d'ajout de tâche
+    // Attach the live enforcement listener to execute immediately on user input
+    input.addEventListener('input', liveWordLimitEnforcement);
+
+
+    // --- Title Persistence Functions ---
+    function saveTitle() {
+        localStorage.setItem(TITLE_STORAGE_KEY, title.textContent.trim());
+    }
+
+    function loadTitle() {
+        const storedTitle = localStorage.getItem(TITLE_STORAGE_KEY);
+        if (storedTitle) {
+            title.textContent = storedTitle;
+        } else {
+            title.textContent = ''; 
+        }
+    }
+
+    title.addEventListener('blur', saveTitle);
+    title.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); 
+            title.blur(); 
+        }
+    });
+
+    // --- Task Persistence & Creation Functions ---
+
+    function saveTasks() {
+        const tasks = [];
+        taskList.querySelectorAll('.task-item').forEach(item => {
+            tasks.push({
+                text: item.querySelector('.task-text').textContent,
+                checked: item.querySelector('.confirmation-checkbox').checked
+            });
+        });
+        localStorage.setItem(TASK_STORAGE_KEY, JSON.stringify(tasks));
+        updateDeleteButtonVisibility();
+    }
+
+    function loadTasks() {
+        const storedTasks = localStorage.getItem(TASK_STORAGE_KEY);
+        if (storedTasks) {
+            const tasks = JSON.parse(storedTasks);
+            tasks.forEach(task => {
+                createTaskElement(task.text, task.checked);
+            });
+        }
+        updateDeleteButtonVisibility();
+    }
+
+    function createTaskElement(text, isChecked = false) {
+        const listItem = document.createElement('li');
+        listItem.classList.add('task-item');
+        listItem.innerHTML = `
+            <span class="task-text ${isChecked ? 'strikethrough' : ''}">${text}</span>
+            <label class="checkmark-container">
+                <input type="checkbox" class="confirmation-checkbox" ${isChecked ? 'checked' : ''}>
+                <span class="checkmark"></span>
+            </label>
+        `;
+
+        const checkbox = listItem.querySelector('.confirmation-checkbox');
+        checkbox.addEventListener('change', (e) => {
+            toggleStrikethrough(e);
+            saveTasks(); 
+        });
+
+        taskList.appendChild(listItem);
+    }
+    
+    // --- Add Task Logic ---
     addTaskBtn.addEventListener('click', addTask);
-    newTaskInput.addEventListener('keypress', (e) => {
+    input.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             addTask();
         }
     });
 
-    // 3. Gestion des Clics dans la Liste (Suppression et Checkbox)
-    taskList.addEventListener('click', (e) => {
-        const clickedTask = e.target.closest('.task');
-        if (!clickedTask) return;
-
-        if (e.target.classList.contains('task-checkbox')) {
-            e.stopPropagation(); 
-            toggleCompletion(clickedTask, e.target.checked);
-        } 
+    function addTask() {
+        const taskText = input.value.trim();
         
-        else {
-            if (clickedTask.classList.contains('completed')) return; 
+        // 1. EMPTY INPUT CHECK (Vibration alert)
+        if (taskText === "") {
+            triggerAlert();
+            return;
+        }
 
-            if (clickedTask.classList.contains('delete-pending')) {
-                clickedTask.remove();
-                saveTasks(); 
-            } else {
-                taskList.querySelectorAll('.delete-pending').forEach(t => t.classList.remove('delete-pending'));
+        // 2. Task List Limit Validation (MAX 20 LISTS)
+        if (taskList.children.length >= MAX_TASKS) {
+            triggerAlert();
+            return;
+        }
 
-                clickedTask.classList.add('delete-pending');
+        // NOTE: Word count enforcement is primarily handled by the 'input' event listener. 
+        // If we reach this point, the text is valid (<= 5 words).
 
-                setTimeout(() => {
-                    if (clickedTask.classList.contains('delete-pending')) {
-                        clickedTask.classList.remove('delete-pending');
-                    }
-                }, 3000); 
-            }
+        createTaskElement(taskText, false);
+        input.value = ''; 
+        saveTasks();
+    }
+
+    // --- Strikethrough and Delete Button Update ---
+    function toggleStrikethrough(event) {
+        const checkbox = event.target;
+        const listItem = checkbox.closest('.task-item');
+        const taskText = listItem.querySelector('.task-text');
+
+        if (checkbox.checked) {
+            taskText.classList.add('strikethrough');
+        } else {
+            taskText.classList.remove('strikethrough');
+        }
+        updateDeleteButtonVisibility();
+    }
+
+    function updateDeleteButtonVisibility() {
+        const checkedItems = taskList.querySelectorAll('.confirmation-checkbox:checked').length;
+        
+        if (checkedItems > 0) {
+            deleteSelectedBtn.style.display = 'inline-block';
+        } else {
+            deleteSelectedBtn.style.display = 'none'; 
+        }
+    }
+
+    // --- Delete Selected Tasks ---
+    deleteSelectedBtn.addEventListener('click', () => {
+        const checkedTasks = taskList.querySelectorAll('.confirmation-checkbox:checked');
+        
+        if (checkedTasks.length === 0) {
+            alert("No tasks confirmed for deletion (no checkboxes checked).");
+            return;
+        }
+
+        if (confirm(`Are you sure you want to delete ${checkedTasks.length} selected task(s)?`)) {
+            checkedTasks.forEach(checkbox => {
+                const listItem = checkbox.closest('.task-item');
+                taskList.removeChild(listItem);
+            });
+            saveTasks();
         }
     });
 
-    // 4. Bouton Effacer les Données
-    clearDataBtn.addEventListener('click', () => {
-        if (confirm("Êtes-vous sûr de vouloir effacer TOUTES les tâches et le titre sauvegardés pour ce navigateur ?")) {
-            localStorage.removeItem(STORAGE_KEY_TASKS);
-            localStorage.removeItem(STORAGE_KEY_TITLE); 
-            taskList.innerHTML = '';
-            listTitleInput.value = 'Ma Liste de Tâches'; 
-            alert("Données effacées. Veuillez rafraîchir la page pour confirmer.");
-        }
-    });
-
-    // --- Initialisation ---
+    // --- INITIALIZATION ---
     loadTitle(); 
     loadTasks(); 
 });

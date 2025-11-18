@@ -1,31 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>To-do list</title>
-    <link rel="shortcut icon" href="./Assets/Imgs/pngtree.png">
-    <link rel="stylesheet" href="./Assets/Styles/index.css">
-</head>
-<body>
-    <video autoplay muted loop id="myVideo">
-        <source src="./Assets/Imgs/Cube.mp4" type="video/mp4">
-        Votre navigateur ne supporte pas la vidéo en arrière-plan.
-    </video>
-    <div class="todo-container">
-        
-        <input type="text" id="list-title" placeholder="Ma Liste de Tâches" class="editable-title">
-        
-        <div class="input-section">
-            <input type="text" id="new-task-input" placeholder="Ajouter une nouvelle tâche...">
-            <button id="add-task-btn">Ajouter</button>
-        </div>
+    <link rel="shortcut icon" href="./Assets/Imgs/pngtree.png" />
+    <link rel="stylesheet" href="./Assets/Styles/index.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1
+        id="list-title"
+        contenteditable="true"
+        data-placeholder="Click to rename your list"
+      ></h1>
 
-        <ul class="task-list" id="task-list">
-            </ul>
-        
-        <button id="clear-data-btn">Effacer toutes les données sauvegardées</button> 
+      <div class="controls">
+        <input
+          type="text"
+          id="task-input"
+          placeholder="Enter a task (max 5 words)"
+          maxlength="40"
+        />
+        <button id="add-task-btn" class="btn btn-add">Add Task</button>
+        <button
+          id="delete-selected-btn"
+          class="btn btn-delete"
+          style="display: none"
+        >
+          Delete Selected
+        </button>
+      </div>
+
+      <ul id="task-list"></ul>
     </div>
+
     <script src="./Assets/Styles/js/index.js"></script>
-</body>
+  </body>
 </html>

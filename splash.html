@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-do list</title>
+    <link rel="shortcut icon" href="./Assets/Imgs/pngtree.png" />
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: url(./Assets/Imgs/Ma.jpg) center/ cover; 
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        
+        #splash-text {
+            font-size: 5rem;
+            color: white;
+            /* Configuration de l'effet de frappe */
+            width: 0; /* Commence caché */
+            overflow: hidden; 
+            white-space: nowrap; /* Empêche le retour à la ligne */
+            border-right: .15em solid orange; /* Le curseur clignotant */
+            /* La phrase "Créons votre vision ensemble" a 31 caractères, y compris les espaces. */
+            animation: 
+                typing 5.5s steps(31, end), 
+                blink-caret .75s step-end infinite; 
+        }
+
+        /* Keyframes pour l'effet de frappe */
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        /* Keyframes pour le curseur clignotant */
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: orange; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="splash-text">
+        Créons votre vision ensemble
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const totalTypingTime = 5500; // Durée de l'animation CSS (3.5 secondes)
+            const delayAfterTyping = 1000; // Délai supplémentaire (1 seconde)
+
+            // Attend la fin de l'animation de frappe, puis redirige.
+            setTimeout(() => {
+                // Redirige vers la page principale de la liste de tâches
+                window.location.href = 'index.html'; 
+            }, totalTypingTime + delayAfterTyping);
+        });
+    </script>
+</body>
+</html>

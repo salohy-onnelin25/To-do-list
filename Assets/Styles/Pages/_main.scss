@@ -1,0 +1,145 @@
+body {
+    font-family: Arial, sans-serif;
+    background: url(../Imgs/Ma.jpg) center/ cover;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    margin: 0;
+}
+
+.container {
+    background: $color-white;
+    padding: $spacing-unit * 3;
+    border-radius: $border-radius * 2;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px;
+}
+
+// --- Title Styling ---
+#list-title {
+    font-size: 2em;
+    margin-bottom: $spacing-unit * 2;
+    padding: 5px 10px;
+    border: 1px dashed transparent;
+    cursor: pointer;
+    text-align: center;
+    color: $color-text;
+
+    &[data-placeholder]:empty:not(:focus)::before {
+        content: attr(data-placeholder);
+        color: #95a5a6;
+    }
+}
+
+// --- Input and Shake/Vibration Effect ---
+@keyframes shake {
+    0% { transform: translateX(0); }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-5px); }
+    80% { transform: translateX(5px); }
+    100% { transform: translateX(0); }
+}
+
+.controls {
+    display: flex;
+    gap: $spacing-unit;
+    margin-bottom: $spacing-unit * 2;
+}
+
+#task-input {
+    flex-grow: 1;
+    padding: $spacing-unit;
+    border: 1px solid #ccc;
+    border-radius: $border-radius;
+}
+
+#task-input.vibrate {
+    border-color: $color-danger;
+    box-shadow: 0 0 8px $color-danger;
+    animation: shake 0.3s ease-in-out;
+}
+
+// --- Buttons ---
+.btn {
+    padding: $spacing-unit 15px;
+    border: none;
+    border-radius: $border-radius;
+    color: $color-white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &-add { background-color: $color-primary; }
+    &-delete { background-color: $color-danger; }
+}
+
+// --- Task List Layout (Columns) ---
+#task-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap; 
+    gap: $spacing-unit;
+}
+
+.task-item {
+    flex: 1 1 30%; /* Allows up to 3 columns on wide screens */
+    min-width: 200px; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-unit;
+    background: $color-success; /* Green background */
+    color: $color-white;
+    border-radius: $border-radius;
+}
+
+.task-text {
+    flex-grow: 1;
+    padding-right: $spacing-unit;
+    word-break: break-word;
+}
+
+.strikethrough {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+// --- Custom Checkbox/Confirmation Button ---
+.confirmation-checkbox {
+    position: absolute;
+    opacity: 0;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    display: block;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%; /* Circular */
+    background-color: $color-white;
+    border: 2px solid $color-white;
+    cursor: pointer;
+    position: relative;
+    
+    &::after {
+        content: "\2713"; /* True symbol */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 14px;
+        color: transparent; /* Invisible by default */
+        font-weight: bold;
+    }
+}
+
+.confirmation-checkbox:checked + .checkmark {
+    background-color: $color-danger; /* Red highlight when checked */
+
+    &::after {
+        color: $color-white;
+    }
+}
