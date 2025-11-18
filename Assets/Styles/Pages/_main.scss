@@ -21,7 +21,6 @@ html {
     max-width: 800px;
 }
 
-// --- Title Styling ---
 #list-title {
     font-size: 2em;
     margin-bottom: $spacing-unit * 2;
@@ -37,24 +36,34 @@ html {
     }
 }
 
-// --- Input and Shake/Vibration Effect ---
 @keyframes shake {
-    0% { transform: translateX(0); }
-    20% { transform: translateX(-5px); }
-    40% { transform: translateX(5px); }
-    60% { transform: translateX(-5px); }
-    80% { transform: translateX(5px); }
-    100% { transform: translateX(0); }
+    0% {
+        transform: translateX(0);
+    }
+    20% {
+        transform: translateX(-5px);
+    }
+    40% {
+        transform: translateX(5px);
+    }
+    60% {
+        transform: translateX(-5px);
+    }
+    80% {
+        transform: translateX(5px);
+    }
+    100% {
+        transform: translateX(0);
+    }
 }
 
 .controls {
     display: flex;
     gap: $spacing-unit;
     margin-bottom: $spacing-unit * 2;
-    @media (max-width: 400px){
+    @media (max-width: 400px) {
         flex-direction: column;
-        
-        /* Les éléments prennent toute la largeur disponible */
+
         align-items: center;
     }
 }
@@ -72,7 +81,6 @@ html {
     animation: shake 0.3s ease-in-out;
 }
 
-// --- Buttons ---
 .btn {
     padding: $spacing-unit 15px;
     border: none;
@@ -81,30 +89,33 @@ html {
     cursor: pointer;
     transition: background-color 0.2s;
 
-    &-add { background-color: $color-primary; }
-    &-delete { background-color: $color-danger; }
-    @media (max-width: 400px){
+    &-add {
+        background-color: $color-primary;
+    }
+    &-delete {
+        background-color: $color-danger;
+    }
+    @media (max-width: 400px) {
         width: 60%;
     }
 }
 
-// --- Task List Layout (Columns) ---
 #task-list {
     list-style: none;
     padding: 0;
     display: flex;
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
     gap: $spacing-unit;
 }
 
 .task-item {
-    flex: 1 1 30%; /* Allows up to 3 columns on wide screens */
-    min-width: 200px; 
+    flex: 1 1 30%;
+    min-width: 200px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: $spacing-unit;
-    background: $color-success; /* Green background */
+    background: $color-success;
     color: $color-white;
     border-radius: $border-radius;
 }
@@ -120,7 +131,6 @@ html {
     opacity: 0.6;
 }
 
-// --- Custom Checkbox/Confirmation Button ---
 .confirmation-checkbox {
     position: absolute;
     opacity: 0;
@@ -132,75 +142,80 @@ html {
     display: block;
     width: 25px;
     height: 25px;
-    border-radius: 50%; /* Circular */
+    border-radius: 50%;
     background-color: $color-white;
     border: 2px solid $color-white;
     cursor: pointer;
     position: relative;
-    
+
     &::after {
-        content: "\2713"; /* True symbol */
+        content: "\2713";
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         font-size: 14px;
-        color: transparent; /* Invisible by default */
+        color: transparent;
         font-weight: bold;
     }
 }
 
 .confirmation-checkbox:checked + .checkmark {
-    background-color: $color-danger; /* Red highlight when checked */
+    background-color: $color-danger;
 
     &::after {
         color: $color-white;
     }
 }
 #splash-overlay {
-    position: fixed; /* Reste au-dessus de tout */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: white; /* L'écran blanc que vous avez demandé */
-    z-index: 9999; /* Assure qu'il est au premier plan */
+    background-color: white;
+    z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
     opacity: 1;
-    transition: opacity 1s ease-out; /* Pour la transition de disparition */
+    transition: opacity 1s ease-out;
 }
 
 #splash-overlay.hidden {
     opacity: 0;
-    visibility: hidden; /* Cache complètement après la transition */
+    visibility: hidden;
     display: flex;
-    justify-content: center; /* Centrage horizontal */
+    justify-content: center;
     align-items: center;
 }
 
-// --- Texte d'animation (Même logique que l'ancienne page splash) ---
 #splash-text {
     font-size: clamp(1.5rem, 4.5vw, 4.5rem);
     font-weight: bolder;
     color: #333;
     width: auto;
     max-width: 0;
-    overflow: hidden; 
-    white-space: nowrap; 
-    border-right: .15em solid orange;
-    /* La durée sera gérée par JavaScript pour le démarrage */
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 0.15em solid orange;
 }
 
-/* Keyframes pour l'effet de frappe */
 @keyframes typing {
-    from { max-width: 0 } 
-    to { max-width: 100% }
+    from {
+        max-width: 0;
+    }
+    to {
+        max-width: 100%;
+    }
 }
 
-/* Keyframes pour le curseur clignotant */
 @keyframes blink-caret {
-    from, to { border-color: transparent }
-    50% { border-color: orange; }
+    from,
+    to {
+        border-color: transparent;
+    }
+    50% {
+        border-color: orange;
+    }
 }
