@@ -1,14 +1,19 @@
 body {
     font-family: Arial, sans-serif;
-    background: url(../Imgs/Ma.jpg) center/ cover;
+    background: url(../Imgs/Ma.jpg) center no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
     display: flex;
     justify-content: center;
     padding: 20px;
     margin: 0;
 }
+html {
+    height: 100%;
+}
 
 .container {
-    background: $color-white;
+    background: rgba(255, 255, 255, 0.932);
     padding: $spacing-unit * 3;
     border-radius: $border-radius * 2;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -46,6 +51,12 @@ body {
     display: flex;
     gap: $spacing-unit;
     margin-bottom: $spacing-unit * 2;
+    @media (max-width: 400px){
+        flex-direction: column;
+        
+        /* Les éléments prennent toute la largeur disponible */
+        align-items: center;
+    }
 }
 
 #task-input {
@@ -72,6 +83,9 @@ body {
 
     &-add { background-color: $color-primary; }
     &-delete { background-color: $color-danger; }
+    @media (max-width: 400px){
+        width: 60%;
+    }
 }
 
 // --- Task List Layout (Columns) ---

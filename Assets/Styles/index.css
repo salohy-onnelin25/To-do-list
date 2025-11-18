@@ -1,7 +1,9 @@
 @charset "UTF-8";
 body {
   font-family: Arial, sans-serif;
-  background: url(../Imgs/Ma.jpg) center/cover;
+  background: url(../Imgs/Ma.jpg) center no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -12,8 +14,12 @@ body {
   margin: 0;
 }
 
+html {
+  height: 100%;
+}
+
 .container {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.932);
   padding: 30px;
   border-radius: 10px;
   -webkit-box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -96,6 +102,18 @@ body {
   gap: 10px;
   margin-bottom: 20px;
 }
+@media (max-width: 400px) {
+  .controls {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    /* Les éléments prennent toute la largeur disponible */
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+  }
+}
 
 #task-input {
   -webkit-box-flex: 1;
@@ -128,6 +146,11 @@ body {
 }
 .btn-delete {
   background-color: #e74c3c;
+}
+@media (max-width: 400px) {
+  .btn {
+    width: 60%;
+  }
 }
 
 #task-list {
