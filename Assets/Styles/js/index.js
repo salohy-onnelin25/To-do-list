@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const addTaskBtn = document.getElementById('add-task-btn');
     const deleteSelectedBtn = document.getElementById('delete-selected-btn');
     const taskList = document.getElementById('task-list');
+    const countdownDisplay = document.getElementById('annual-countdown'); // NOUVEAU
+    
     const MAX_TASKS = 20;
     const MAX_WORDS = 5;
     const TASK_STORAGE_KEY = 'todoListTasks'; 
@@ -15,6 +17,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalTypingTime = TYPING_CHARS * TYPING_SPEED; 
     const delayAfterTyping = 1000;
     const fadeOutDuration = 1000; 
+
+    function updateCountdown() {
+        const now = new Date();
+        let targetYear = now.getFullYear();
+        let targetDate = new Date(targetYear + 1, 0, 1, 0, 0, 0); 
+        if (targetDate.getTime() <= now.getTime()) {
+            targetYear += 1;
+            targetDate = new Date(targetYear, 0, 1, 0, 0, 0);
+        }
+
+        const distance = targetDate.getTime() - now.getTime();
+        
+        if (distance < 0) {
+            countdownDisplay.innerHTML = "🎉 Bonne année ! Mise à jour du compte à rebours...";
+            return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        countdownDisplay.innerHTML = `
+             ${days}j ${hours}h ${minutes}m ${seconds}s
+        `;
+    }
 
     function triggerAlert() {
         if ("vibrate" in navigator) {
@@ -111,14 +139,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function addTask() {
         const taskText = input.value.trim();
-        if (taskText === "") {
+        const words = taskText.split(/\s+/).filter(word => word.length > 0);
+        
+        if (taskText === "" || words.length > MAX_WORDS) {
             triggerAlert();
             return;
         }
         if (taskList.children.length >= MAX_TASKS) {
             triggerAlert();
+            alert(`Limite atteinte: Vous ne pouvez pas ajouter plus de ${MAX_TASKS} tâches.`);
             return;
         }
+        
         createTaskElement(taskText, false);
         input.value = ''; 
         saveTasks();
@@ -152,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (checkedTasks.length === 0) {
             return; 
         }
-        if (confirm(`Are you sure you want to delete ${checkedTasks.length} selected task(s)?`)) {
+        if (confirm(`Êtes-vous sûr de vouloir supprimer ${checkedTasks.length} tâche(s) sélectionnée(s) ?`)) {
             checkedTasks.forEach(checkbox => {
                 const listItem = checkbox.closest('.task-item');
                 taskList.removeChild(listItem);
@@ -171,6 +203,9 @@ document.addEventListener('DOMContentLoaded', () => {
         splashText.style.borderRightColor = 'orange';
         setTimeout(() => {
             splashOverlay.classList.add('hidden');
+            updateCountdown();
+            setInterval(updateCountdown, 1000); 
+
             setTimeout(() => {
                 loadTitle(); 
                 loadTasks(); 
